@@ -1,0 +1,37 @@
+1-ACA - reporte da produção
+2-ACT - acerto automático gerado pelo cálculo do preço médio (gerado no cálculo preço médio - CE0401)
+3-CAC - implementação futura
+4-DD - implantação de saldos em ordens de produção
+5-DEV - devolução de requisição de materiais
+6-DIV - transações diversas (inclusão de TD de entrada ou saída - CE0220)
+7-DRM - devolução de requisição de material eletrônica (esta espécie é gerada no momento que for efetuado a Devolução da requisição - CD1410).
+8-EAC - estorno de reporte de produção
+9-EGF - implementação futura
+10-BEM - implementação futura
+11-ESP - implementação futura
+12-GRN - goods receiving note (nota de recebimento)
+13-GTN - goods transfer note (nota de transferência)
+14-ICM - imposto de circulação de mercadorias
+15-INV - inventário (atualização do inventário - CE0703)
+16-IPL - implantação de saldo
+17-MOB - contabilização de mão-de-obra
+18-NC - nota complementar (ex: despesa acessória na NFE e nota de rateio).
+19-NF - nota fiscal
+20-NFD - nota fiscal de devolução (no caso de NF de Devolução de Cliente - RE1001 e no caso de NF de Devolução de Fornecedores - FT4003)
+21-NFE - nota fiscal de entrada (atualização da NF - RE1001)
+22-NFS - nota fiscal de saída
+23-NFT - nota fiscal de transferência entre estabelecimentos
+24-PRA - purchase return aknowledgment (nota devolução de compra=nfd)
+25-REF - refugo
+26-RCS - requisição de consignado
+27-RDD - requisição de débito direto (movimento gerado pelos programas - CP0311; CP0320 e CP0321)
+28-REQ - requisição
+29-RFS - requisição de item físico
+30-RM - requisição de material eletrônica (ex.: gera no momento que for atendido a requisição de estoque - CD1409).
+31-RRQ - retorno de requisição (via produção)
+32-STR - substituição tributária (Quando a nota fiscal possuir Substituição Tributária e na parametrização da natureza de operação estiver marcado para “Gerar Crédito da Substituição Tributária” (Pasta ICMS). Será gerado um movimento STR no Estoque com o valor substituto)
+33-TRA - transferência entre depósitos
+34-ZZZ - implementação futura
+35-SOB - sobra
+36-EDD - estorno de implantação de saldo em ordens de produção
+37-VAR - variação de custo padrão
