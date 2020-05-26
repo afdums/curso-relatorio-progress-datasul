@@ -1,0 +1,11 @@
+saldo-estoq.cod-estabel
+saldo-estoq.it-codigo
+item.desc-item
+saldo-estoq.cod-depos
+deposito.descricao
+saldo-estoq.cod-localiz
+saldo-estoq.lote
+saldo-estoq.dt-valid-lote
+saldo-estoq.cod-refer
+saldo-estoq.qtidade-atu
+movto-estoq.dt-trans (FIND LAST movto-estoq OF saldo-estoq NO-LOCK NO-ERROR).
