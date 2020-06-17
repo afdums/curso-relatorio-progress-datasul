@@ -1,9 +1,3 @@
-/*******************************************************************************
-**
-** CD1007.I - Defini‡Æo da tt-param
-**
-********************************************************************************/
-
 def temp-table tt-param no-undo
     field destino      as int
     field arquivo      as char format "x(35)"
@@ -14,5 +8,3 @@ def temp-table tt-param no-undo
     field c-pais-fim   as char format "x(20)"
     field c-estado-ini as char format "x(04)"
     field c-estado-fim as char format "x(04)".
-    
-/*cdp/cd1007.i*/

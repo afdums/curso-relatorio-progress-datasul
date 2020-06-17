@@ -10,11 +10,11 @@
 ** parcial ou total por qualquer meio, so podera ser feita mediante
 ** autorizacao expressa.
 *******************************************************************************/
-{include/i-prgvrs.i XX9999 2.00.00.000}  /*** 010000 ***/
+{include/i-prgvrs.i XX1000 2.00.00.000}  /*** 010000 ***/
 
 &IF "{&EMSFND_VERSION}" >= "1.00"
 &THEN
-{include/i-license-manager.i XX9999 MCD}
+{include/i-license-manager.i XX1000 MCD}
 &ENDIF
 
 
@@ -39,7 +39,7 @@ CREATE WIDGET-POOL.
 
 /* Temporary Table Definitions ---                                      */
 
-{xxp/xx9999.i}
+{xxp/xx1000.i}
 
 define temp-table tt-digita no-undo
     field ordem            as integer   format ">>>>9"
@@ -141,21 +141,30 @@ DEFINE RECTANGLE RECT-9
      EDGE-PIXELS 2 GRAPHIC-EDGE  NO-FILL   
      SIZE 46.29 BY 1.71.
 
-DEFINE VARIABLE c-fim-estado AS CHARACTER FORMAT "X(4)":U INITIAL "ZZZZZZZZZZZZZZZ" 
+DEFINE VARIABLE c-cod-depos-fim AS CHARACTER FORMAT "X(3)":U INITIAL "ZZZ" 
+     VIEW-AS FILL-IN 
+     SIZE 6.29 BY .88 NO-UNDO.
+
+DEFINE VARIABLE c-cod-depos-ini AS CHARACTER FORMAT "X(3)":U 
+     LABEL "Deposito" 
+     VIEW-AS FILL-IN 
+     SIZE 5.86 BY .88 NO-UNDO.
+
+DEFINE VARIABLE c-cod-estabel-fim AS CHARACTER FORMAT "X(5)":U INITIAL "ZZZZZ" 
      VIEW-AS FILL-IN 
      SIZE 8.29 BY .88 NO-UNDO.
 
-DEFINE VARIABLE c-fim-pais AS CHARACTER FORMAT "X(20)":U INITIAL "ZZZZZZZZZZZZZZZ" 
+DEFINE VARIABLE c-cod-estabel-ini AS CHARACTER FORMAT "X(5)":U 
+     LABEL "Estabel" 
+     VIEW-AS FILL-IN 
+     SIZE 8.29 BY .88 NO-UNDO.
+
+DEFINE VARIABLE c-it-codigo-fim AS CHARACTER FORMAT "X(16)":U INITIAL "ZZZZZZZZZZZZZZZZ" 
      VIEW-AS FILL-IN 
      SIZE 20.86 BY .88 NO-UNDO.
 
-DEFINE VARIABLE c-ini-estado AS CHARACTER FORMAT "X(4)":U 
-     LABEL "Estado" 
-     VIEW-AS FILL-IN 
-     SIZE 8.29 BY .88 NO-UNDO.
-
-DEFINE VARIABLE c-ini-pais AS CHARACTER FORMAT "X(20)":U 
-     LABEL "Pa¡s" 
+DEFINE VARIABLE c-it-codigo-ini AS CHARACTER FORMAT "X(16)":U 
+     LABEL "Item" 
      VIEW-AS FILL-IN 
      SIZE 20.86 BY .88 NO-UNDO.
 
@@ -172,6 +181,14 @@ DEFINE IMAGE IMAGE-3
      SIZE 3 BY .88.
 
 DEFINE IMAGE IMAGE-4
+     FILENAME "image\im-las":U
+     SIZE 3 BY .88.
+
+DEFINE IMAGE IMAGE-5
+     FILENAME "image\im-fir":U
+     SIZE 3 BY .88.
+
+DEFINE IMAGE IMAGE-6
      FILENAME "image\im-las":U
      SIZE 3 BY .88.
 
@@ -270,14 +287,18 @@ DEFINE FRAME f-pg-imp
          SIZE 73.72 BY 10.
 
 DEFINE FRAME f-pg-sel
-     c-ini-pais AT ROW 3.04 COL 13.14 COLON-ALIGNED
-     c-fim-pais AT ROW 3.04 COL 45.72 COLON-ALIGNED NO-LABEL
-     c-ini-estado AT ROW 4.04 COL 13.14 COLON-ALIGNED
-     c-fim-estado AT ROW 4.04 COL 45.72 COLON-ALIGNED NO-LABEL
-     IMAGE-1 AT ROW 3.04 COL 36.72
-     IMAGE-2 AT ROW 3.04 COL 44.29
-     IMAGE-3 AT ROW 4.17 COL 36.72
-     IMAGE-4 AT ROW 4.17 COL 44.29
+     c-cod-estabel-ini AT ROW 3.42 COL 13.14 COLON-ALIGNED WIDGET-ID 4
+     c-cod-estabel-fim AT ROW 3.42 COL 45.72 COLON-ALIGNED NO-LABEL WIDGET-ID 2
+     c-cod-depos-ini AT ROW 4.42 COL 13.14 COLON-ALIGNED
+     c-cod-depos-fim AT ROW 4.42 COL 45.72 COLON-ALIGNED NO-LABEL
+     c-it-codigo-ini AT ROW 5.46 COL 13 COLON-ALIGNED
+     c-it-codigo-fim AT ROW 5.46 COL 45.57 COLON-ALIGNED NO-LABEL
+     IMAGE-1 AT ROW 5.46 COL 36.57
+     IMAGE-2 AT ROW 5.46 COL 44.14
+     IMAGE-3 AT ROW 4.46 COL 36.72
+     IMAGE-4 AT ROW 4.46 COL 44.29
+     IMAGE-5 AT ROW 3.46 COL 36.72 WIDGET-ID 6
+     IMAGE-6 AT ROW 3.46 COL 44.29 WIDGET-ID 8
     WITH 1 DOWN NO-BOX KEEP-TAB-ORDER OVERLAY 
          SIDE-LABELS NO-UNDERLINE THREE-D 
          AT COL 3 ROW 2.85
@@ -485,9 +506,9 @@ END.
 
 
 &Scoped-define FRAME-NAME f-pg-sel
-&Scoped-define SELF-NAME c-fim-estado
-&ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL c-fim-estado w-relat
-ON LEAVE OF c-fim-estado IN FRAME f-pg-sel
+&Scoped-define SELF-NAME c-cod-depos-fim
+&ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL c-cod-depos-fim w-relat
+ON LEAVE OF c-cod-depos-fim IN FRAME f-pg-sel
 DO:
   assign self:screen-value in frame f-pg-sel =
          caps(self:screen-value in frame f-pg-sel).
@@ -497,9 +518,33 @@ END.
 &ANALYZE-RESUME
 
 
-&Scoped-define SELF-NAME c-ini-estado
-&ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL c-ini-estado w-relat
-ON LEAVE OF c-ini-estado IN FRAME f-pg-sel /* Estado */
+&Scoped-define SELF-NAME c-cod-depos-ini
+&ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL c-cod-depos-ini w-relat
+ON LEAVE OF c-cod-depos-ini IN FRAME f-pg-sel /* Deposito */
+DO:
+  assign self:screen-value in frame f-pg-sel =
+         caps(self:screen-value in frame f-pg-sel).
+END.
+
+/* _UIB-CODE-BLOCK-END */
+&ANALYZE-RESUME
+
+
+&Scoped-define SELF-NAME c-cod-estabel-fim
+&ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL c-cod-estabel-fim w-relat
+ON LEAVE OF c-cod-estabel-fim IN FRAME f-pg-sel
+DO:
+  assign self:screen-value in frame f-pg-sel =
+         caps(self:screen-value in frame f-pg-sel).
+END.
+
+/* _UIB-CODE-BLOCK-END */
+&ANALYZE-RESUME
+
+
+&Scoped-define SELF-NAME c-cod-estabel-ini
+&ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL c-cod-estabel-ini w-relat
+ON LEAVE OF c-cod-estabel-ini IN FRAME f-pg-sel /* Estabel */
 DO:
   assign self:screen-value in frame f-pg-sel =
          caps(self:screen-value in frame f-pg-sel).
@@ -584,7 +629,7 @@ END.
 ASSIGN CURRENT-WINDOW                = {&WINDOW-NAME} 
        THIS-PROCEDURE:CURRENT-WINDOW = {&WINDOW-NAME}.
 
-{utp/ut9000.i "XX9999" "2.00.00.000"}
+{utp/ut9000.i "XX1000" "2.00.00.000"}
 
 /* inicializa‡äes do template de relat¢rio */
 {include/i-rpini.i}
@@ -687,10 +732,12 @@ PROCEDURE enable_UI :
   ENABLE im-pg-sel im-pg-imp bt-executar bt-cancelar bt-ajuda 
       WITH FRAME f-relat IN WINDOW w-relat.
   {&OPEN-BROWSERS-IN-QUERY-f-relat}
-  DISPLAY c-ini-pais c-fim-pais c-ini-estado c-fim-estado 
+  DISPLAY c-cod-estabel-ini c-cod-estabel-fim c-cod-depos-ini c-cod-depos-fim 
+          c-it-codigo-ini c-it-codigo-fim 
       WITH FRAME f-pg-sel IN WINDOW w-relat.
-  ENABLE IMAGE-1 IMAGE-2 IMAGE-3 IMAGE-4 c-ini-pais c-fim-pais c-ini-estado 
-         c-fim-estado 
+  ENABLE IMAGE-1 IMAGE-2 IMAGE-3 IMAGE-4 IMAGE-5 IMAGE-6 c-cod-estabel-ini 
+         c-cod-estabel-fim c-cod-depos-ini c-cod-depos-fim c-it-codigo-ini 
+         c-it-codigo-fim 
       WITH FRAME f-pg-sel IN WINDOW w-relat.
   {&OPEN-BROWSERS-IN-QUERY-f-pg-sel}
   DISPLAY rs-destino c-arquivo rs-execucao 
@@ -754,10 +801,12 @@ do on error undo, return error on stop  undo, return error:
            tt-param.destino         = input frame f-pg-imp rs-destino
            tt-param.data-exec       = today
            tt-param.hora-exec       = time
-           tt-param.c-pais-ini      = input frame f-pg-sel c-ini-pais
-           tt-param.c-pais-fim      = input frame f-pg-sel c-fim-pais
-           tt-param.c-estado-ini    = input frame f-pg-sel c-ini-estado
-           tt-param.c-estado-fim    = input frame f-pg-sel c-fim-estado.                      
+           tt-param.cod-estabel-ini = INPUT FRAME f-pg-sel c-cod-estabel-ini
+           tt-param.cod-estabel-fim = INPUT FRAME f-pg-sel c-cod-estabel-fim
+           tt-param.cod-depos-ini   = INPUT FRAME f-pg-sel c-cod-depos-ini
+           tt-param.cod-depos-fim   = INPUT FRAME f-pg-sel c-cod-depos-fim
+           tt-param.it-codigo-ini   = INPUT FRAME f-pg-sel c-it-codigo-ini
+           tt-param.it-codigo-fim   = INPUT FRAME f-pg-sel c-it-codigo-fim.                      
            
     if tt-param.destino = 1 
     then assign tt-param.arquivo = "".
@@ -775,7 +824,7 @@ do on error undo, return error on stop  undo, return error:
     
     SESSION:SET-WAIT-STATE("general":U).
     
-    {include/i-rprun.i xxp/xx9999rp.p}
+    {include/i-rprun.i xxp/xx1000rp.p}
     
     {include/i-rpexc.i}
     
