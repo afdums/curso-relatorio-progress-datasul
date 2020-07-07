@@ -10,11 +10,11 @@
 ** parcial ou total por qualquer meio, so podera ser feita mediante
 ** autorizacao expressa.
 *******************************************************************************/
-{include/i-prgvrs.i XX9998 2.00.00.000}  /*** 010000 ***/
+{include/i-prgvrs.i XX9997 2.00.00.000}  /*** 010000 ***/
 
 &IF "{&EMSFND_VERSION}" >= "1.00"
 &THEN
-{include/i-license-manager.i XX9998 MCD}
+{include/i-license-manager.i XX9997 MCD}
 &ENDIF
 
 
@@ -39,7 +39,7 @@ CREATE WIDGET-POOL.
 
 /* Temporary Table Definitions ---                                      */
 
-{xxp/xx9998.i}
+{xxp/xx9997.i}
 
 define temp-table tt-digita no-undo
     field ordem            as integer   format ">>>>9"
@@ -141,39 +141,10 @@ DEFINE RECTANGLE RECT-9
      EDGE-PIXELS 2 GRAPHIC-EDGE  NO-FILL   
      SIZE 46.29 BY 1.71.
 
-DEFINE VARIABLE c-fim-estado AS CHARACTER FORMAT "X(4)":U INITIAL "ZZZZZZZZZZZZZZZ" 
-     VIEW-AS FILL-IN 
-     SIZE 8.29 BY .88 NO-UNDO.
-
-DEFINE VARIABLE c-fim-pais AS CHARACTER FORMAT "X(20)":U INITIAL "ZZZZZZZZZZZZZZZ" 
+DEFINE VARIABLE i-num-pedido AS INTEGER FORMAT "->,>>>,>>9":U INITIAL 0 
+     LABEL "Pedido" 
      VIEW-AS FILL-IN 
      SIZE 20.86 BY .88 NO-UNDO.
-
-DEFINE VARIABLE c-ini-estado AS CHARACTER FORMAT "X(4)":U 
-     LABEL "Estado" 
-     VIEW-AS FILL-IN 
-     SIZE 8.29 BY .88 NO-UNDO.
-
-DEFINE VARIABLE c-ini-pais AS CHARACTER FORMAT "X(20)":U 
-     LABEL "Pa¡s" 
-     VIEW-AS FILL-IN 
-     SIZE 20.86 BY .88 NO-UNDO.
-
-DEFINE IMAGE IMAGE-1
-     FILENAME "image\im-fir":U
-     SIZE 3 BY .88.
-
-DEFINE IMAGE IMAGE-2
-     FILENAME "image\im-las":U
-     SIZE 3 BY .88.
-
-DEFINE IMAGE IMAGE-3
-     FILENAME "image\im-fir":U
-     SIZE 3 BY .88.
-
-DEFINE IMAGE IMAGE-4
-     FILENAME "image\im-las":U
-     SIZE 3 BY .88.
 
 DEFINE BUTTON bt-ajuda 
      LABEL "Ajuda" 
@@ -270,14 +241,7 @@ DEFINE FRAME f-pg-imp
          SIZE 73.72 BY 10.
 
 DEFINE FRAME f-pg-sel
-     c-ini-pais AT ROW 3.04 COL 13.14 COLON-ALIGNED
-     c-fim-pais AT ROW 3.04 COL 45.72 COLON-ALIGNED NO-LABEL
-     c-ini-estado AT ROW 4.04 COL 13.14 COLON-ALIGNED
-     c-fim-estado AT ROW 4.04 COL 45.72 COLON-ALIGNED NO-LABEL
-     IMAGE-1 AT ROW 3.04 COL 36.72
-     IMAGE-2 AT ROW 3.04 COL 44.29
-     IMAGE-3 AT ROW 4.17 COL 36.72
-     IMAGE-4 AT ROW 4.17 COL 44.29
+     i-num-pedido AT ROW 3.04 COL 13.14 COLON-ALIGNED
     WITH 1 DOWN NO-BOX KEEP-TAB-ORDER OVERLAY 
          SIDE-LABELS NO-UNDERLINE THREE-D 
          AT COL 3 ROW 2.85
@@ -486,32 +450,6 @@ END.
 &ANALYZE-RESUME
 
 
-&Scoped-define FRAME-NAME f-pg-sel
-&Scoped-define SELF-NAME c-fim-estado
-&ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL c-fim-estado w-relat
-ON LEAVE OF c-fim-estado IN FRAME f-pg-sel
-DO:
-  assign self:screen-value in frame f-pg-sel =
-         caps(self:screen-value in frame f-pg-sel).
-END.
-
-/* _UIB-CODE-BLOCK-END */
-&ANALYZE-RESUME
-
-
-&Scoped-define SELF-NAME c-ini-estado
-&ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL c-ini-estado w-relat
-ON LEAVE OF c-ini-estado IN FRAME f-pg-sel /* Estado */
-DO:
-  assign self:screen-value in frame f-pg-sel =
-         caps(self:screen-value in frame f-pg-sel).
-END.
-
-/* _UIB-CODE-BLOCK-END */
-&ANALYZE-RESUME
-
-
-&Scoped-define FRAME-NAME f-relat
 &Scoped-define SELF-NAME im-pg-imp
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL im-pg-imp w-relat
 ON MOUSE-SELECT-CLICK OF im-pg-imp IN FRAME f-relat
@@ -586,7 +524,7 @@ END.
 ASSIGN CURRENT-WINDOW                = {&WINDOW-NAME} 
        THIS-PROCEDURE:CURRENT-WINDOW = {&WINDOW-NAME}.
 
-{utp/ut9000.i "XX9998" "2.00.00.000"}
+{utp/ut9000.i "XX9997" "2.00.00.000"}
 
 /* inicializa‡äes do template de relat¢rio */
 {include/i-rpini.i}
@@ -689,10 +627,9 @@ PROCEDURE enable_UI :
   ENABLE im-pg-sel bt-executar bt-cancelar bt-ajuda 
       WITH FRAME f-relat IN WINDOW w-relat.
   {&OPEN-BROWSERS-IN-QUERY-f-relat}
-  DISPLAY c-ini-pais c-fim-pais c-ini-estado c-fim-estado 
+  DISPLAY i-num-pedido 
       WITH FRAME f-pg-sel IN WINDOW w-relat.
-  ENABLE IMAGE-1 IMAGE-2 IMAGE-3 IMAGE-4 c-ini-pais c-fim-pais c-ini-estado 
-         c-fim-estado 
+  ENABLE i-num-pedido 
       WITH FRAME f-pg-sel IN WINDOW w-relat.
   {&OPEN-BROWSERS-IN-QUERY-f-pg-sel}
   DISPLAY rs-destino c-arquivo rs-execucao 
@@ -752,14 +689,11 @@ do on error undo, return error on stop  undo, return error:
        para o programa RP.P */
     
     create tt-param.
-    assign tt-param.usuario         = c-seg-usuario
-           tt-param.destino         = input frame f-pg-imp rs-destino
-           tt-param.data-exec       = today
-           tt-param.hora-exec       = time
-           tt-param.c-pais-ini      = input frame f-pg-sel c-ini-pais
-           tt-param.c-pais-fim      = input frame f-pg-sel c-fim-pais
-           tt-param.c-estado-ini    = input frame f-pg-sel c-ini-estado
-           tt-param.c-estado-fim    = input frame f-pg-sel c-fim-estado.                      
+    assign tt-param.usuario          = c-seg-usuario
+           tt-param.destino          = input frame f-pg-imp rs-destino
+           tt-param.data-exec        = today
+           tt-param.hora-exec        = time
+           tt-param.i-num-pedido     = input frame f-pg-sel i-num-pedido.
            
     if tt-param.destino = 1 
     then assign tt-param.arquivo = "".
@@ -780,7 +714,7 @@ do on error undo, return error on stop  undo, return error:
     
     SESSION:SET-WAIT-STATE("general":U).
     
-    {include/i-rprun.i xxp/xx9998rp.p}
+    {include/i-rprun.i xxp/xx9997rp.p}
     
     {include/i-rpexc.i}
     
